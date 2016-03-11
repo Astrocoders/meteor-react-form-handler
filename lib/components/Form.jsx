@@ -8,17 +8,8 @@ Form = React.createClass({
 
   childContextTypes: {
     schema: React.PropTypes.instanceOf(SimpleSchema),
-    doc: React.PropTypes.object,
-    fieldDefinitions: React.PropTypes.object,
-  },
-
-  // Assuming that the schema won't get changed
-  getChildContext(){
-    return {
-      schema: this.props.schema,
-      doc: this.props.doc,
-      fieldDefinitions: this.state.fieldDefinitions,
-    };
+    formDoc: React.PropTypes.object,
+    formFieldDefinitions: React.PropTypes.object,
   },
 
   getInitialState(){
@@ -28,8 +19,20 @@ Form = React.createClass({
     };
   },
 
+  getChildContext(){
+    return {
+      schema: this.props.schema,
+      formDoc: this.props.doc,
+      formFieldDefinitions: this.state.fieldDefinitions,
+    };
+  },
+
   componentWillMount(){
     FormHandler.initializeForm(this.props.id);
+  },
+
+  componentDidMount(){
+    this._prepareFieldDefinitions();
   },
 
   focusInput(name){
@@ -103,17 +106,23 @@ Form = React.createClass({
       }
     }
   },
-  _renderChildren: function () {
 
+  _renderChildren(){
     if (this.props.doc) {
       FormHandler.setFormDoc(this.props.id, this.props.doc);
     }
 
     var that = this;
     var formDoc = FormHandler.getFormDoc(this.props.id);
+    if(!_.isEmpty(this.state.fieldDefinitions)){
+      return this.props.children;
+    }
+  },
+
+  _prepareFieldDefinitions(){
     const fieldDefinitions = this.state.fieldDefinitions;
 
-    this.props.schema._keys.forEach((key) => {
+    this.props.schema._schemaKeys.forEach((key) => {
       var schemaObject = this.props.schema._schema[key];
 
       var fieldDefinition = {};
@@ -138,18 +147,18 @@ Form = React.createClass({
         fieldDefinition.allowedValues = schemaObject.allowedValues;
       }
 
-      if (typeof this.props.schema._schema[child.props.name + '.$'] !== 'undefined') {
-        var itemSchemaObject = this.props.schema._schema[child.props.name + '.$'];
+      if (typeof this.props.schema._schema[key + '.$'] !== 'undefined') {
+        var itemSchemaObject = this.props.schema._schema[key + '.$'];
         if (itemSchemaObject.allowedValues) {
           fieldDefinition.allowedValues = itemSchemaObject.allowedValues;
         }
       }
 
-      if (this.state.errors[child.props.name]) {
+      if (this.state.errors[key]) {
         fieldDefinition.errorText =
           (FormHandler.i18n) ?
-            TAPi18n.__('errors.' + this.state.errors[child.props.name]) :
-              this.state.errors[child.props.name];
+            TAPi18n.__('errors.' + this.state.errors[key]) :
+              this.state.errors[key];
 
               fieldDefinition.error = true;
       } else {
@@ -161,9 +170,6 @@ Form = React.createClass({
     });
 
     this.setState({fieldDefinitions});
-
-
-    return this.props.children;
   },
   render(){
     let className = "";
