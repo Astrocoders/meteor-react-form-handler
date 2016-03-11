@@ -74,13 +74,16 @@ Form = React.createClass({
     doc = formToDoc ? formToDoc(doc) : doc;
 
     if (!validationContext.validate(doc)) {
-      var errors = {};
+      const errors = {};
+      const fieldDefinitions = this.state.fieldDefinitions;
 
       _.each(validationContext._invalidKeys, function(error) {
         errors[error.name] = error.type;
+        fieldDefinitions[error.name].error = true;
+        fieldDefinitions[error.name].errorText = error.type;
       });
 
-      this.setState({errors: errors});
+      this.setState({errors, fieldDefinitions});
 
       if (FormHandler.debug) {
         console.error('React form handler validation errors', errors);
