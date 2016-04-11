@@ -78,9 +78,7 @@ FormHandler.getFormSchema = function(formId){
 
 FormHandler.getFormDoc = function(formId, formEl) {
   var schema = FormHandler.getFormSchema(formId);
-  if(!schema) throw new Error(`[FormHandler] No such form with id ${formId}`);
   formEl = formEl ? formEl : document.getElementById(formId);
-  if(!formEl) throw new Error(`[FormHandler] No such DOM element #${formId`}`);
   var doc = schema.clean(_.reduce(formEl.querySelectorAll('[name]'),
     (doc, field) => {
       doc[field.name] = FormHandler.getFieldValue(field);
