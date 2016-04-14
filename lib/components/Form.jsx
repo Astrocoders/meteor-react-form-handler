@@ -53,7 +53,7 @@ Form = React.createClass({
 
     var schema = this.props.schema;
     var formToDoc = FormHandler[this.props.id] && FormHandler[this.props.id].formToDoc;
-
+    var onError = FormHandler[this.props.id] && FormHandler[this.props.id].onError;
     var doc = FormHandler.getFormDoc(this.props.id, this.refs.form);
 
     var validationContext = schema.newContext();
@@ -81,6 +81,10 @@ Form = React.createClass({
       });
 
       this.setState({errors, fieldDefinitions});
+
+      if (onError && typeof onError === 'function') {
+        onError(errors, fieldDefinitions);
+      }
 
       if (FormHandler.debug) {
         console.error('React form handler validation errors', errors);
