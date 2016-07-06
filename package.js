@@ -10,7 +10,7 @@ Package.onUse(function(api) {
 
   // Dependencies
   api.use([
-      'react@0.14.1_1',
+      'react',
       'aldeed:simple-schema@1.3.3',
       'check'
   ]);
@@ -46,5 +46,4 @@ Package.onUse(function(api) {
 
 Package.onTest(function (api) {
   // api.use("tinytest");
-  api.use("coniel:react-form-handler");
 });
