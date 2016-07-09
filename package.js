@@ -2,7 +2,7 @@ Package.describe({
   name: "astrocoders:react-form-handler",
   summary: "React form validation using aldeed:simple-schema" ,
   git: 'https://github.com/coniel/meteor-react-form-handler.git',
-  version: "0.6.3"
+  version: "0.6.4"
 });
 
 Package.onUse(function(api) {
@@ -10,18 +10,18 @@ Package.onUse(function(api) {
 
   // Dependencies
   api.use([
-      'react',
-      'aldeed:simple-schema@1.3.3',
-      'check'
+    'aldeed:simple-schema@1.3.3',
+    'stevezhu:lodash',
+    'check',
+    'ecmascript',
   ]);
 
   // Shared files
   api.addFiles([
-      'lib/utils.js',
-      'lib/react-form-handler.jsx',
-      'lib/simple-schema-extensions.js',
-      'lib/layout-styles.js',
-     'lib/components/Form.jsx'
+    'lib/utils.js',
+    'lib/react-form-handler.js',
+    'lib/simple-schema-extensions.js',
+    'lib/form-builder.js',
   ]);
 
   // Server files
@@ -36,14 +36,7 @@ Package.onUse(function(api) {
 
   // Exports
   api.export([
-      'FormHandler',
-      'Form',
-      'FormLayoutStyles',
-      'AvailableFormLayoutStyles'
+    'FormHandler',
+    'FormBuilder',
   ]);
-});
-
-
-Package.onTest(function (api) {
-  // api.use("tinytest");
 });
